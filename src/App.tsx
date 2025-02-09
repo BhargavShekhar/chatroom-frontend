@@ -1,11 +1,16 @@
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './App.css'
+import { useEffect } from 'react';
 
 function App() {
+  const nav = useNavigate();
+
+  useEffect(() => {
+    nav("/start")
+  }, [])
+
   return (
-    <>
-      <Navigate to={"/start"} />
-    </>
+    <></>
   )
 }
 
