@@ -19,8 +19,6 @@ export const ChatBox = () => {
 
     const username = useRecoilValue(userAtom);
 
-    console.log(WebSocketUrl)
-
     useEffect(() => {
         const ws = new WebSocket(WebSocketUrl);
 
