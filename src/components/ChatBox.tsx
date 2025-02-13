@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userAtom } from '../store/userAtom';
-
-const WebSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+import { useNavigate } from 'react-router-dom';
+import { websocketAtom } from '../store/websocketAtom';
 
 interface Message {
     text: string;
@@ -12,17 +12,30 @@ interface Message {
 
 
 export const ChatBox = () => {
-    const [socket, setSocket] = useState<WebSocket | null>(null);
+    const ws = useRecoilValue(websocketAtom);
     const inputRef = useRef<HTMLInputElement>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
     const username = useRecoilValue(userAtom);
+    const nav = useNavigate();
 
     useEffect(() => {
-        const ws = new WebSocket(WebSocketUrl);
+        if(!username || !ws) {
+            nav("/start", { replace: true });
+            return;
+        }
 
-        setSocket(ws);
+        const pageLoadState = performance.getEntriesByType("navigation")[0];
+
+        // @ts-ignore
+        if (pageLoadState.type == "reload" && !sessionStorage.getItem("redirected")) {
+            sessionStorage.setItem("redirected", "true");
+            nav("/start", { replace: true });
+        }
+        else {
+            sessionStorage.removeItem("redirected");
+        }
 
         ws.onmessage = (e) => {
             try {
@@ -43,9 +56,9 @@ export const ChatBox = () => {
     }, [messages])
 
     const sendMessage = () => {
-        if (socket && inputRef.current) {
+        if (ws && inputRef.current) {
             const message = inputRef.current.value;
-            socket.send(JSON.stringify({ sender: username, message }));
+            ws.send(JSON.stringify({ sender: username, message }));
             setMessages((prevMessages) => [...prevMessages, { text: message, type: "sent", sender: "You" }]);
             inputRef.current.value = "";
         }
