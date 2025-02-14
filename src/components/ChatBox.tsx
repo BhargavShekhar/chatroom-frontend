@@ -21,20 +21,11 @@ export const ChatBox = () => {
     const nav = useNavigate();
 
     useEffect(() => {
+        // Redirect on reload
         if(!username || !ws) {
+            console.log("No username or websocket found redirecting to start page")
             nav("/start", { replace: true });
             return;
-        }
-
-        const pageLoadState = performance.getEntriesByType("navigation")[0];
-
-        // @ts-ignore
-        if (pageLoadState.type == "reload" && !sessionStorage.getItem("redirected")) {
-            sessionStorage.setItem("redirected", "true");
-            nav("/start", { replace: true });
-        }
-        else {
-            sessionStorage.removeItem("redirected");
         }
 
         ws.onmessage = (e) => {
@@ -47,7 +38,7 @@ export const ChatBox = () => {
         }
 
         return () => {
-            ws.close();
+            ws.onmessage = null;
         }
     }, [])
 

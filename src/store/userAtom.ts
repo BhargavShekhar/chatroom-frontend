@@ -1,6 +1,8 @@
 import { atom } from "recoil";
 
-export const userAtom = atom({
-    default: "Guest",
+const storedUsername = sessionStorage.getItem("username");
+
+export const userAtom = atom<string | null>({
+    default: storedUsername ? storedUsername : null,
     key: "userAtom"
 })

@@ -12,10 +12,14 @@ export const StartBox = () => {
     const isConnected = useWebSocket();
 
     const handleSubmit = () => {
-        if (!inputRef.current || !isConnected) return;
+        if (!inputRef.current || !isConnected) {
+            alert("WebSocket not Connected");
+            return;
+        }
         const username = inputRef.current.value;
         if (!username) return alert("Username can not be empty");
         setUsername(username);
+        sessionStorage.setItem("username", username);
         nav("/chat");
     }
 
