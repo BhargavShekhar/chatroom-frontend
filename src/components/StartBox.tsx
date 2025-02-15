@@ -23,6 +23,10 @@ export const StartBox = () => {
         nav("/chat");
     }
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === "Enter") handleSubmit();
+    }
+
     return (
         <div className="flex flex-col items-center p-4 bg-white rounded-xl gap-4 w-72 shadow-2xl shadow-black">
             {
@@ -36,6 +40,7 @@ export const StartBox = () => {
                 placeholder="Enter a username"
                 ref={inputRef}
                 className="border rounded-md p-2 w-full text-black"
+                onKeyDown={handleKeyDown}
             />
             <button
                 onClick={handleSubmit}
