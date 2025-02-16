@@ -28,6 +28,8 @@ export const ChatBox = () => {
             return;
         }
 
+        ws.send(JSON.stringify({ type: "getUserCount" }));
+
         ws.onmessage = (e) => {
             try {
                 const data = JSON.parse(e.data);
@@ -48,7 +50,7 @@ export const ChatBox = () => {
         }
 
         return () => {
-            ws.onmessage = null;
+            ws.close();
         }
     }, [])
 
